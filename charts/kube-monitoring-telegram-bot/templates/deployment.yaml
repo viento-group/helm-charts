@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kube-monitoring-telegram-bot.fullname" . }}
+  labels:
+    app: {{ template "kube-monitoring-telegram-bot.name" . }}
+    chart: {{ template "kube-monitoring-telegram-bot.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kube-monitoring-telegram-bot.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kube-monitoring-telegram-bot.name" . }}
+        release: {{ .Release.Name }}
+        {{- if .Values.pod.labels }}
+        {{ toYaml .Values.pod.labels }}
+        {{- end }}
+      annotations:
+      {{ toYaml .Values.pod.annotations | indent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+              name: http
+          env:
+            {{- if .Values.telegramBot.globalBotToken.use }}
+            {{- if .Values.telegramBot.globalBotToken.existingPasswordSecret }}
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.telegramBot.globalBotToken.existingPasswordSecret }}"
+                  key: "{{ .Values.telegramBot.globalBotToken.existingPasswordSecretKey }}"
+            {{- else }}
+            - name: TELEGRAM_BOT_TOKEN
+              value: {{ .Values.telegramBot.globalBotToken.token }}
+            {{- end }}
+            {{- end }}
+
+            {{- if .Values.telegramBot.kubewatchBotToken.use }}
+            {{- if .Values.telegramBot.kubewatchBotToken.existingPasswordSecret }}
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.telegramBot.kubewatchBotToken.existingPasswordSecret }}"
+                  key: "{{ .Values.telegramBot.kubewatchBotToken.existingPasswordSecretKey }}"
+            {{- else }}
+            - name: TELEGRAM_BOT_TOKEN
+              value: {{ .Values.telegramBot.kubewatchBotToken.token }}
+            {{- end }}
+            {{- end }}
+
+            {{- if .Values.telegramBot.prometheusBotToken.use }}
+            {{- if .Values.telegramBot.prometheusBotToken.existingPasswordSecret }}
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.telegramBot.prometheusBotToken.existingPasswordSecret }}"
+                  key: "{{ .Values.telegramBot.prometheusBotToken.existingPasswordSecretKey }}"
+            {{- else }}
+            - name: TELEGRAM_BOT_TOKEN
+              value: {{ .Values.telegramBot.prometheusBotToken.token }}
+            {{- end }}
+            {{- end }}
+            
+            - name: LOGGING_LEVEL
+              value: {{ .Values.telegramBot.loggingLevel }}
+            
+            - name: PORT
+              value: {{ .Values.service.internalPort }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+      {{- with .Values.pod.nodeSelector }}
+      nodeSelector:
+      {{ toYaml . | indent 8 }}
+      {{- end }}
