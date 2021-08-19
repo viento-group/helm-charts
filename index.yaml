@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  kube-monitoring-telegram-bot:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-08-19T20:56:10.190762165Z"
+    description: A Helm chart for kube-monitoring-telegram-bot application deployment
+    digest: a6c999a6f898b1937871e19b59423ea1dbec46c7a561455805f574c1cb84cdce
+    name: kube-monitoring-telegram-bot
+    type: application
+    urls:
+    - https://github.com/viento-group/helm-charts/releases/download/kube-monitoring-telegram-bot-0.1.0/kube-monitoring-telegram-bot-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-08-19T20:56:10.190778067Z"
