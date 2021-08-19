@@ -19,10 +19,10 @@ spec:
         app: {{ template "kube-monitoring-telegram-bot.name" . }}
         release: {{ .Release.Name }}
         {{- if .Values.pod.labels }}
-        {{ toYaml .Values.pod.labels }}
+{{ toYaml .Values.pod.labels | indent 8 }}
         {{- end }}
       annotations:
-      {{ toYaml .Values.pod.annotations | indent 8 }}
+{{ toYaml .Values.pod.annotations | indent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -82,5 +82,5 @@ spec:
             runAsNonRoot: true
       {{- with .Values.pod.nodeSelector }}
       nodeSelector:
-      {{ toYaml . | indent 8 }}
+{{ toYaml . | indent 8 }}
       {{- end }}
