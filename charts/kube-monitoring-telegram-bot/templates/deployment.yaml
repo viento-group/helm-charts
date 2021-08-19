@@ -76,7 +76,6 @@ spec:
               value: "{{ .Values.service.internalPort }}"
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
       {{- with .Values.pod.nodeSelector }}
       nodeSelector:
