@@ -48,25 +48,25 @@ spec:
             {{- end }}
             {{- if .Values.telegramBot.kubewatchBotToken.use }}
             {{- if .Values.telegramBot.kubewatchBotToken.existingPasswordSecret }}
-            - name: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_KUBEWATCH_BOT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.telegramBot.kubewatchBotToken.existingPasswordSecret }}"
                   key: "{{ .Values.telegramBot.kubewatchBotToken.existingPasswordSecretKey }}"
             {{- else }}
-            - name: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_KUBEWATCH_BOT_TOKEN
               value: {{ .Values.telegramBot.kubewatchBotToken.token }}
             {{- end }}
             {{- end }}
             {{- if .Values.telegramBot.prometheusBotToken.use }}
             {{- if .Values.telegramBot.prometheusBotToken.existingPasswordSecret }}
-            - name: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_PROMETHEUS_BOT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.telegramBot.prometheusBotToken.existingPasswordSecret }}"
                   key: "{{ .Values.telegramBot.prometheusBotToken.existingPasswordSecretKey }}"
             {{- else }}
-            - name: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_PROMETHEUS_BOT_TOKEN
               value: {{ .Values.telegramBot.prometheusBotToken.token }}
             {{- end }}
             {{- end }}
