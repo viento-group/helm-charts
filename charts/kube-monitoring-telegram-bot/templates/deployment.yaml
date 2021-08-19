@@ -73,7 +73,7 @@ spec:
             - name: LOGGING_LEVEL
               value: {{ .Values.telegramBot.loggingLevel }}
             - name: PORT
-              value: {{ .Values.service.internalPort | toString }}
+              value: "{{ .Values.service.internalPort }}"
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
