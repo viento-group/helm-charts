@@ -1,37 +1,75 @@
-## Welcome to GitHub Pages
+# Official helm charts repository of Viento group
 
-You can use the [editor on GitHub](https://github.com/viento-group/helm-charts/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+## Add repository to helm
+Run folow commands to add this helm repository:
+```bash
+$ helm repo add viento-group https://viento-group.github.io/helm-charts
+$ helm repo update
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Availiable charts
+- [kube-monitoring-telegram-bot](#kube-monitoring-telegram-bot-helm-chart)
 
-### Jekyll Themes
+## kube-monitoring-telegram-bot helm chart
+This is official kube-monitoring-telegram-bot helm chart of Viento group.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/viento-group/helm-charts/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+This chart use [viento-group/kubernetes-monitoring-telegram-bot](https://github.com/viento-group/kubernetes-monitoring-telegram-bot) application for setting up telegram bot, that send notifications, received from Kubewatch and Prometheus Alert Manager.
 
-### Support or Contact
+Example command to run this helm chart:
+```bash
+$ helm repo add viento-group https://viento-group.github.io/helm-charts
+$ helm repo update
+$ helm install telegram-bot viento-group/kube-monitoring-telegram-bot --set telegramBot.globalBotToken.use=true --set telegramBot.globalBotToken.token=<telegram-bot-token>
+```
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Configuration
+#### Image configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+replicaCount | 1 | Count of replicas, that Kubernetes should create.
+image.repository | vientoprojects/kubernetes-monitoring-telegram-bot | Image repository.
+image.pullPolicy | IfNotPresent | Image pull policy.
+image.tag | latest | Tag of image.
+
+#### Global telegram bot configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+telegramBot.globalBotToken.use | false | Should we use telegram global bot.
+telegramBot.globalBotToken.existingPasswordSecret | ~ | Password secret name, which collect global telegram bot token. If `~`, `telegramBot.globalBotToken.token` will be used.
+telegramBot.globalBotToken.existingPasswordSecretKey | global-bot-token | Password secret key, which collect global telegram bot token.
+telegramBot.globalBotToken.token | | Plain telegram global bot token.
+
+#### Kubewatch telegram bot configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+telegramBot.kubewatchBotToken.use | false | Should we use telegram kubewatch bot (if `false`, global bot will be used for sending Kubewatch notifications).
+telegramBot.kubewatchBotToken.existingPasswordSecret | ~ | Password secret name, which collect kubewatch telegram bot token. If `~`, `telegramBot.kubewatchBotToken.token` will be used.
+telegramBot.kubewatchBotToken.existingPasswordSecretKey | kubewatch-bot-token | Password secret key, which collect kubewatch telegram bot token.
+telegramBot.kubewatchBotToken.token | | Plain telegram kubewatch bot token.
+
+#### Prometheus telegram bot configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+telegramBot.prometheusBotToken.use | false | Should we use telegram prometheus bot (if `false`, global bot will be used for sending Prometheus alerts).
+telegramBot.prometheusBotToken.existingPasswordSecret | ~ | Password secret name, which collect prometheus telegram bot token. If `~`, `telegramBot.prometheusBotToken.token` will be used.
+telegramBot.prometheusBotToken.existingPasswordSecretKey | prometheus-bot-token | Password secret key, which collect prometheus telegram bot token.
+telegramBot.prometheusBotToken.token | | Plain telegram prometheus bot token.
+
+#### Application configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+telegramBot.loggingLevel | info | Application logging level. Available: `trace`, `debug`, `info`, `warn`, `error`, `fatal`, `off`.
+
+#### Pod configuration
+Key | Description
+--- | -----------
+pod.labels | Key-value map, that will be applied as a pod labels.
+pod.annotations | Key-value map, that will be applied as a pod annotations.
+pod.nodeSelector | Key-value map, that will be applied as a pod node selector.
+
+#### Service configuration
+Key | Default Value | Description
+--- | ------------- | -----------
+service.type | ClusterIP | Type of kubernetes service, that will be created.
+service.internalPort | 8080 | Internal port, that will be used, for accessing application (application will automaticaly use this port).
+service.externalPort | 8080 | External port, on which clients could connect to this service.
