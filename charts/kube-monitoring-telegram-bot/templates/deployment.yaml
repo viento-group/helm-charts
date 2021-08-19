@@ -21,8 +21,10 @@ spec:
         {{- if .Values.pod.labels }}
 {{ toYaml .Values.pod.labels | indent 8 }}
         {{- end }}
+      {{- if .Values.pod.annotations }}
       annotations:
 {{ toYaml .Values.pod.annotations | indent 8 }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -44,7 +46,6 @@ spec:
               value: {{ .Values.telegramBot.globalBotToken.token }}
             {{- end }}
             {{- end }}
-
             {{- if .Values.telegramBot.kubewatchBotToken.use }}
             {{- if .Values.telegramBot.kubewatchBotToken.existingPasswordSecret }}
             - name: TELEGRAM_BOT_TOKEN
@@ -57,7 +58,6 @@ spec:
               value: {{ .Values.telegramBot.kubewatchBotToken.token }}
             {{- end }}
             {{- end }}
-
             {{- if .Values.telegramBot.prometheusBotToken.use }}
             {{- if .Values.telegramBot.prometheusBotToken.existingPasswordSecret }}
             - name: TELEGRAM_BOT_TOKEN
@@ -70,10 +70,8 @@ spec:
               value: {{ .Values.telegramBot.prometheusBotToken.token }}
             {{- end }}
             {{- end }}
-            
             - name: LOGGING_LEVEL
               value: {{ .Values.telegramBot.loggingLevel }}
-            
             - name: PORT
               value: {{ .Values.service.internalPort }}
           securityContext:
